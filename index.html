@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Rendimento</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    img {
+      max-width: 200px;
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-weight: normal;
+    }
+
+    .btn-start {
+      background-color: #2dc4ff;
+      border: none;
+      color: white;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      font-size: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .btn-start:hover {
+      background-color: #1aaddd;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo da AgroDivel -->
+  <img src="logo-agrodivel.png" alt="AgroDivel Logo"> <!-- Substitua por seu caminho correto -->
+
+  <!-- Texto principal -->
+  <h2>INICIAR CALCULO</h2>
+
+  <!-- Botão iniciar -->
+  <button class="btn-start" onclick="irParaFormulario()">+</button>
+
+  <script>
+    function irParaFormulario() {
+      // Aqui vamos redirecionar para a próxima etapa
+      window.location.href = "formulario.html"; // Substitua pelo próximo passo real
+    }
+  </script>
+</body>
+</html>

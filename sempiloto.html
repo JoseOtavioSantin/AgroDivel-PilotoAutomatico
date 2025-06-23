@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sem Piloto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      padding-top: 40px;
+    }
+
+    .logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 100px;
+    }
+
+    h2 {
+      margin-top: 60px;
+      margin-bottom: 20px;
+      font-weight: normal;
+    }
+
+    .talhao-container {
+      margin-top: 50px;
+      width: 300px;
+      height: 300px;
+      background: #002e5d;
+      border-radius: 20px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dimensao {
+      position: absolute;
+      color: black;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .top {
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .btn-plus {
+      background-color: #2dc4ff;
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-plus.preenchido {
+      background-color: #28a745;
+      font-size: 30px;
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+    }
+
+    .popup-content input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    .popup-content button {
+      background: #2dc4ff;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    #btnAvancar {
+      margin-top: 20px;
+      background-color: #002e5d;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      display: none;
+      cursor: pointer;
+    }
+
+    #resultado {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="logo-agrodivel.png" class="logo" alt="Logo">
+
+  <h2>SEM PILOTO</h2>
+
+  <div class="talhao-container">
+    <div class="dimensao top" id="ladoTalhao">---</div>
+    <button class="btn-plus" id="btnMais" onclick="abrirPopup()">+</button>
+  </div>
+
+  <div id="resultado"></div>
+
+  <button id="btnAvancar" onclick="avancar()">Avançar</button>
+
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h3>Informe os dados</h3>
+      <input type="number" id="implemento" placeholder="Tamanho do implemento (m)">
+      <input type="number" id="erro" placeholder="Imprecisão do sinal (m)">
+      <button onclick="calcular()">Salvar</button>
+    </div>
+  </div>
+
+  <script>
+    const area = parseFloat(localStorage.getItem("area_total") || 0);
+    const lado = Math.sqrt(area * 10000).toFixed(0);
+    document.getElementById("ladoTalhao").textContent = `${lado} m`;
+
+    function abrirPopup() {
+      document.getElementById("popup").style.display = "flex";
+    }
+
+    function calcular() {
+      const imp = parseFloat(document.getElementById("implemento").value);
+      const erro = parseFloat(document.getElementById("erro").value);
+      if (imp > 0 && erro >= 0) {
+        const larguraTotal = imp + erro;
+        const passadas = (lado / larguraTotal).toFixed(1);
+
+        document.getElementById("resultado").textContent = `➤ Passadas sem piloto: ${passadas}`;
+
+        const btn = document.getElementById("btnMais");
+        btn.textContent = "✓";
+        btn.classList.add("preenchido");
+
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("btnAvancar").style.display = "block";
+
+        localStorage.setItem("passadas_sem_piloto", passadas);
+      } else {
+        alert("Preencha os dois campos corretamente.");
+      }
+    }
+
+    function avancar() {
+      window.location.href = "compiloto.html"; // próxima etapa
+    }
+  </script>
+
+</body>
+</html>

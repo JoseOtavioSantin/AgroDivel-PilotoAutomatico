@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultado Final</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: white;
+      color: #000;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .secao {
+      margin-bottom: 30px;
+      border-bottom: 2px solid #000;
+      padding-bottom: 15px;
+    }
+
+    .linha {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 0;
+      align-items: center;
+    }
+
+    .negrito {
+      font-weight: bold;
+    }
+
+    .botao-voltar {
+      margin-top: 40px;
+      display: block;
+      background-color: #002e5d;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .caixa-azul {
+      background-color: #002e5d;
+      color: white;
+      padding: 2px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    select {
+      padding: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Resultado do Cálculo</h2>
+
+  <div class="secao">
+    <div class="linha"><span><strong>Economia de passadas</strong></span> <span id="passadasEconomizadas">-</span></div>
+    <div class="linha"><span>Área de incremento</span> <span id="areaIncremento">-</span></div>
+    <div class="linha"><span>Aumento de área</span> <span id="aumentoArea">-</span></div>
+  </div>
+
+  <div class="secao">
+    <div class="linha negrito">Aumento de Produtividade</div>
+    <div class="linha"><span>Aumento de área</span> <span id="prodArea">-</span></div>
+    <div class="linha"><span>Aumento de produção</span> <span id="sacas">-</span></div>
+    <div class="linha">
+      <span>Valor Saca</span>
+      <select id="cultura" onchange="atualizarValor()">
+        <option value="soja">Soja</option>
+        <option value="milho">Milho</option>
+        <option value="celoba">Celoba</option>
+      </select>
+      <span id="valorSaca">R$ 125,00</span>
+    </div>
+    <div class="linha"><span>Produção</span> <span id="producao">60</span></div>
+    <div class="linha"><span>Atualizado</span> <span>20/06/2025</span></div>
+    <div class="linha"><span>Projeção Financeira</span> <span id="projecao">-</span></div>
+  </div>
+
+  <div class="secao">
+    <div class="linha"><span>Incremento de Receita</span> <span class="caixa-azul" id="nomeCultura">Soja</span> <span id="receita">-</span></div>
+    <div class="linha"><span>Custo Diesel</span> <span>R$ 6,44</span> <span id="diesel">-</span></div>
+    <div class="linha"><span>Sinal</span> <span class="caixa-azul">GSPRO</span> <span id="sinal">R$ 9.000,00</span></div>
+  </div>
+
+  <div class="linha negrito">
+    <span>Retorno Piloto Automático</span> <span id="retorno">-</span>
+  </div>
+
+  <button class="botao-voltar" onclick="window.location.href='index.html'">Voltar ao início</button>
+
+  <script>
+    // Valores por cultura
+    const valoresCultura = {
+      soja: 125.00,
+      milho: 78.50,
+      celoba: 93.20
+    };
+
+    const nomesCultura = {
+      soja: 'Soja',
+      milho: 'Milho',
+      celoba: 'Celoba'
+    };
+
+    // Dados base salvos no localStorage
+    const passadasSem = parseFloat(localStorage.getItem("passadas_sem_piloto"));
+    const passadasCom = parseFloat(localStorage.getItem("passadas_com_piloto"));
+    const economiaPassadas = passadasSem - passadasCom;
+
+    const areaTotal = parseFloat(localStorage.getItem("area_total")) || 0;
+    const lado = Math.sqrt(areaTotal * 10000);
+    const larguraMedia = 8.5;
+    const areaIncrementoM2 = economiaPassadas * larguraMedia * lado;
+    const areaIncrementoHa = areaIncrementoM2 / 10000;
+
+    const producaoPorHa = 60;
+    const dieselPorHa = 6.44;
+    const custoSinal = 9000;
+
+    function atualizarValor() {
+      const culturaSelecionada = document.getElementById("cultura").value;
+      const valorSaca = valoresCultura[culturaSelecionada];
+
+      // Recalcular projeção
+      const totalSacas = areaIncrementoHa * producaoPorHa;
+      const receitaTotal = totalSacas * valorSaca;
+      const custoDiesel = dieselPorHa * areaIncrementoHa;
+      const retornoLiquido = receitaTotal - custoDiesel - custoSinal;
+
+      // Atualiza os campos
+      document.getElementById("valorSaca").textContent = `R$ ${valorSaca.toFixed(2).replace('.', ',')}`;
+      document.getElementById("nomeCultura").textContent = nomesCultura[culturaSelecionada];
+      document.getElementById("projecao").textContent = `R$ ${receitaTotal.toFixed(2).replace('.', ',')}`;
+      document.getElementById("receita").textContent = `R$ ${receitaTotal.toFixed(2).replace('.', ',')}`;
+      document.getElementById("diesel").textContent = `R$ ${custoDiesel.toFixed(2).replace('.', ',')}`;
+      document.getElementById("retorno").textContent = `R$ ${retornoLiquido.toFixed(2).replace('.', ',')}`;
+    }
+
+    // Preenche dados na primeira carga
+    window.onload = () => {
+      document.getElementById("passadasEconomizadas").textContent = economiaPassadas.toFixed(0);
+      document.getElementById("areaIncremento").textContent = `${areaIncrementoM2.toFixed(0)} m²`;
+      document.getElementById("aumentoArea").textContent = `${areaIncrementoHa.toFixed(2)} ha`;
+      document.getElementById("prodArea").textContent = `${areaIncrementoHa.toFixed(2)} ha`;
+      document.getElementById("sacas").textContent = `${(areaIncrementoHa * producaoPorHa).toFixed(0)} Sacas`;
+
+      document.getElementById("cultura").value = "soja";
+      atualizarValor();
+    };
+  </script>
+
+</body>
+</html>
