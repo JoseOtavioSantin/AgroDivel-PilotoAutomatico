@@ -161,27 +161,29 @@
       document.getElementById("popup").style.display = "flex";
     }
 
-    function calcular() {
-      const imp = parseFloat(document.getElementById("implemento").value);
-      const erro = parseFloat(document.getElementById("erro").value);
-      if (imp > 0 && erro >= 0) {
-        const larguraTotal = imp + erro;
-        const passadas = (lado / larguraTotal).toFixed(1);
+function calcular() {
+  const imp = parseFloat(document.getElementById("implemento").value);
+  const erro = parseFloat(document.getElementById("erro").value);
+  if (imp > 0 && erro >= 0) {
+    const larguraTotal = imp + erro;
+    const passadas = (lado / larguraTotal).toFixed(1);
 
-        document.getElementById("resultado").textContent = `➤ Passadas com piloto: ${passadas}`;
+    document.getElementById("resultado").textContent = `➤ Passadas com piloto: ${passadas}`;
 
-        const btn = document.getElementById("btnMais");
-        btn.textContent = "✓";
-        btn.classList.add("preenchido");
+    const btn = document.getElementById("btnMais");
+    btn.textContent = "✓";
+    btn.classList.add("preenchido");
 
-        document.getElementById("popup").style.display = "none";
-        document.getElementById("btnAvancar").style.display = "block";
+    document.getElementById("popup").style.display = "none";
+    document.getElementById("btnAvancar").style.display = "block";
 
-        localStorage.setItem("passadas_com_piloto", passadas);
-      } else {
-        alert("Preencha os dois campos corretamente.");
-      }
-    }
+    // 🔧 Correção aqui:
+    localStorage.setItem("implemento_com", imp);
+    localStorage.setItem("imprecisao_com", erro);
+  } else {
+    alert("Preencha os dois campos corretamente.");
+  }
+}
 
     function finalizar() {
       window.location.href = "resultadofinal.html"; // ou próximo passo
