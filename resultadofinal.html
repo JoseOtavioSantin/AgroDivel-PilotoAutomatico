@@ -106,7 +106,6 @@
 
   <div class="card">
     <div class="linha"><span>📊 Receita Incrementada - <span class="caixa-azul" id="nomeCultura">Soja</span></span> <strong id="receita">-</strong></div>
-    <div class="linha"><span>⛽ Custo Diesel</span> <strong id="diesel">-</strong></div>
     <div class="linha"><span>📡 Custo Sinal</span> <strong id="sinal">R$ 9.000,00</strong></div>
   </div>
 
@@ -158,14 +157,12 @@
         const valorSaca = valoresCultura[cultura];
         const totalSacas = areaIncrementoHa * producaoPorHa;
         const receitaTotal = totalSacas * valorSaca;
-        const custoDiesel = dieselPorHa * areaIncrementoHa;
-        const retorno = receitaTotal - custoDiesel - custoSinal;
+        const retorno = receitaTotal - custoSinal;
 
         document.getElementById("valorSaca").textContent = `R$ ${valorSaca.toFixed(2).replace('.', ',')}`;
         document.getElementById("nomeCultura").textContent = nomesCultura[cultura];
         document.getElementById("projecao").textContent = `R$ ${receitaTotal.toFixed(2).replace('.', ',')}`;
         document.getElementById("receita").textContent = `R$ ${receitaTotal.toFixed(2).replace('.', ',')}`;
-        document.getElementById("diesel").textContent = `R$ ${custoDiesel.toFixed(2).replace('.', ',')}`;
         document.getElementById("retorno").textContent = `R$ ${retorno.toFixed(2).replace('.', ',')}`;
       }
 
@@ -184,6 +181,53 @@
     } else {
       alert("❗ Dados incompletos. Volte e preencha novamente.");
     }
+
+    function enviarWhatsApp() {
+  const passadasCom = document.getElementById("passadasCom").textContent;
+  const passadasSem = document.getElementById("passadasSem").textContent;
+  const ganhoPassadas = document.getElementById("ganhoPassadas").textContent;
+  const areaIncremento = document.getElementById("areaIncremento").textContent;
+  const aumentoArea = document.getElementById("aumentoArea").textContent;
+  const prodPorHa = document.getElementById("producaoInput").value;
+  const sacas = document.getElementById("sacas").textContent;
+  const receita = document.getElementById("receita").textContent;
+  const valorSaca = document.getElementById("valorSaca").textContent;
+  const retorno = document.getElementById("retorno").textContent;
+  const cultura = document.getElementById("nomeCultura").textContent;
+
+  const mensagem = 
+`📊 Resultado estimado com Piloto Automático:
+
+✅ Passadas com piloto: ${passadasCom}
+🚜 Passadas sem piloto: ${passadasSem}
+📉 Ganho de passadas: ${ganhoPassadas} passadas
+
+📐 Área incrementada: ${areaIncremento} (${aumentoArea})
+
+🌾 Produção por hectare: ${prodPorHa} sacas
+📦 Produção adicional: ${sacas}
+💰 Valor da saca: ${valorSaca}
+📈 Receita extra estimada: ${receita}
+
+📡 Custo sinal GPS: R$ 9.000,00
+
+🔁 Retorno estimado: ${retorno}
+🌱 Cultura analisada: ${cultura}
+
+Equipe AgroDivel 🚜🌾`;
+
+  const numero = prompt("Informe o número do cliente (somente números com DDD):", "49999999999");
+  if (numero) {
+    const url = `https://wa.me/55${numero}?text=${encodeURIComponent(mensagem)}`;
+    window.open(url, '_blank');
+  }
+}
+
+
   </script>
+
+  <button class="botao-voltar" onclick="enviarWhatsApp()">📤 Enviar por WhatsApp</button>
+
+
 </body>
 </html>
