@@ -89,6 +89,10 @@
     <div class="linha"><span>🟩 Aumento de área</span> <strong id="prodArea">-</strong></div>
     <div class="linha"><span>📦 Aumento de produção</span> <strong id="sacas">-</strong></div>
     <div class="linha">
+    <span>🌾 Produção por hectare</span>
+  <input type="number" id="producaoInput" value="60" style="width: 80px; font-size: 16px; padding: 4px;" onchange="atualizarValor()">
+</div>
+    <div class="linha">
       <span>💰 Valor saca</span>
       <select id="cultura" onchange="atualizarValor()">
         <option value="soja">Soja</option>
@@ -120,14 +124,14 @@
     };
 
     const nomesCultura = {
-      soja: 'Soja',
-      milho: 'Milho',
-      celoba: 'Celoba'
+      soja: 'SOJA',
+      milho: 'MILHO',
+      celoba: 'CEBOLA'
     };
 
     const areaTotal = parseFloat(localStorage.getItem("area_total")) || 0;
     const lado = Math.sqrt(areaTotal * 10000);
-    const producaoPorHa = 60;
+    let producaoPorHa = parseFloat(localStorage.getItem("producao_por_ha")) || 60;
     const dieselPorHa = 6.44;
     const custoSinal = 9000;
 
@@ -148,6 +152,8 @@
       const areaIncrementoHa = areaIncrementoM2 / 10000;
 
       function atualizarValor() {
+        producaoPorHa = parseFloat(document.getElementById("producaoInput").value) || 0;
+        localStorage.setItem("producao_por_ha", producaoPorHa);
         const cultura = document.getElementById("cultura").value;
         const valorSaca = valoresCultura[cultura];
         const totalSacas = areaIncrementoHa * producaoPorHa;
@@ -164,6 +170,7 @@
       }
 
       window.onload = () => {
+        document.getElementById("producaoInput").value = producaoPorHa;
         document.getElementById("passadasSem").textContent = passadasSem.toFixed(0);
         document.getElementById("passadasCom").textContent = passadasCom.toFixed(0);
         document.getElementById("ganhoPassadas").textContent = ganhoPassadas.toFixed(0);
