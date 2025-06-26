@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#002e5d">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <meta charset="UTF-8">
   <title>Resultado Final</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,13 +57,14 @@
       font-size: 16px;
       border: none;
       border-radius: 8px;
-      margin-top: 20px;
+      margin-top: 12px;
       cursor: pointer;
     }
 
-    select {
-      padding: 6px;
-      font-size: 16px;
+    select, input {
+      font-size: 14px;
+      padding: 4px;
+      border-radius: 5px;
     }
 
     @media (max-width: 500px) {
@@ -85,34 +89,48 @@
   </div>
 
   <div class="card">
-    <div class="linha"><strong>🌾 Aumento de Produtividade</strong></div>
+    <div class="linha"><strong>📈 Aumento de Produtividade</strong></div>
     <div class="linha"><span>🟩 Aumento de área</span> <strong id="prodArea">-</strong></div>
     <div class="linha"><span>📦 Aumento de produção</span> <strong id="sacas">-</strong></div>
     <div class="linha">
-    <span>🌾 Produção por hectare</span>
-  <input type="number" id="producaoInput" value="60" style="width: 80px; font-size: 16px; padding: 4px;" onchange="atualizarValor()">
-</div>
+      <span>🌾 Produção por hectare</span>
+      <input type="number" id="producaoInput" value="60" onchange="atualizarValor()" style="width: 80px;">
+    </div>
     <div class="linha">
-      <span>💰 Valor saca</span>
-      <select id="cultura" onchange="atualizarValor()">
-        <option value="soja">Soja</option>
-        <option value="milho">Milho</option>
-        <option value="celoba">Celoba</option>
-      </select>
+      <span>💰 Valor saca - 
+        <select id="cultura" onchange="atualizarValor()">
+          <option value="soja">Soja</option>
+          <option value="milho">Milho</option>
+          <option value="celoba">Celoba</option>
+        </select>
+      </span>
       <strong id="valorSaca">R$ 125,00</strong>
     </div>
-    <div class="linha"><span>📈 Projeção financeira</span> <strong id="projecao">-</strong></div>
+    <div class="linha"><span>📊 Projeção financeira</span> <strong id="projecao">-</strong></div>
   </div>
 
   <div class="card">
-    <div class="linha"><span>📊 Receita Incrementada - <span class="caixa-azul" id="nomeCultura">Soja</span></span> <strong id="receita">-</strong></div>
-    <div class="linha"><span>📡 Custo Sinal</span> <strong id="sinal">R$ 9.000,00</strong></div>
+    <div class="linha">
+      <span>📈 Receita Incrementada - <span class="caixa-azul" id="nomeCultura">SOJA</span></span>
+      <strong id="receita">-</strong>
+    </div>
+    <div class="linha">
+      <span>📡 Custo Sinal - 
+        <select id="modeloSinal" onchange="atualizarValor()">
+          <option value="GS500 Lite">GS500 Lite (R$ 9.060,00)</option>
+          <option value="PLM1">PLM1 (R$ 2.890,00)</option>
+          <option value="PLM3">PLM3 (R$ 9.060,00)</option>
+        </select>
+      </span>
+      <strong id="sinal">-</strong>
+    </div>
   </div>
 
   <div class="card">
     <div class="linha"><strong>🔁 Retorno Piloto Automático</strong> <strong id="retorno">-</strong></div>
   </div>
 
+  <button class="botao-voltar" onclick="enviarWhatsApp()">📤 Enviar por WhatsApp</button>
   <button class="botao-voltar" onclick="window.location.href='index.html'">🔙 Voltar ao Início</button>
 
   <script>
@@ -123,23 +141,46 @@
     };
 
     const nomesCultura = {
-      soja: 'SOJA',
-      milho: 'MILHO',
-      celoba: 'CEBOLA'
+      soja: 'Soja',
+      milho: 'Milho',
+      celoba: 'Celoba'
+    };
+
+    const custosSinal = {
+      "GS500 Lite": 9060,
+      "PLM1": 2890,
+      "PLM3": 9060
     };
 
     const areaTotal = parseFloat(localStorage.getItem("area_total")) || 0;
     const lado = Math.sqrt(areaTotal * 10000);
     let producaoPorHa = parseFloat(localStorage.getItem("producao_por_ha")) || 60;
-    const dieselPorHa = 6.44;
-    const custoSinal = 9000;
+    let modeloSinal = localStorage.getItem("modelo_sinal") || "GS500 Lite";
+    let custoSinal = custosSinal[modeloSinal];
 
     const implementoSem = parseFloat(localStorage.getItem("implemento_sem"));
     const imprecisaoSem = parseFloat(localStorage.getItem("imprecisao_sem"));
     const implementoCom = parseFloat(localStorage.getItem("implemento_com"));
     const imprecisaoCom = parseFloat(localStorage.getItem("imprecisao_com"));
 
-    if (!isNaN(implementoSem) && !isNaN(imprecisaoSem) && !isNaN(implementoCom) && !isNaN(imprecisaoCom)) {
+    function atualizarValor() {
+      const cultura = document.getElementById("cultura").value;
+      modeloSinal = document.getElementById("modeloSinal").value;
+      custoSinal = custosSinal[modeloSinal] || 0;
+
+      // Atualiza o erro (imprecisão) baseado no sinal escolhido
+      let imprecisaoCom = 0.3; // valor padrão
+      if (modeloSinal === "GS500 Lite") imprecisaoCom = 0.30;
+      if (modeloSinal === "PLM1") imprecisaoCom = 0.10;
+      if (modeloSinal === "PLM3") imprecisaoCom = 0.03;
+
+      // Atualiza no localStorage
+      localStorage.setItem("imprecisao_com", imprecisaoCom);
+      producaoPorHa = parseFloat(document.getElementById("producaoInput").value) || 0;
+
+      localStorage.setItem("producao_por_ha", producaoPorHa);
+      localStorage.setItem("modelo_sinal", modeloSinal);
+
       const larguraSem = implementoSem + imprecisaoSem;
       const larguraCom = implementoCom + imprecisaoCom;
 
@@ -150,84 +191,76 @@
       const areaIncrementoM2 = ganhoPassadas * larguraCom * lado;
       const areaIncrementoHa = areaIncrementoM2 / 10000;
 
-      function atualizarValor() {
-        producaoPorHa = parseFloat(document.getElementById("producaoInput").value) || 0;
-        localStorage.setItem("producao_por_ha", producaoPorHa);
-        const cultura = document.getElementById("cultura").value;
-        const valorSaca = valoresCultura[cultura];
-        const totalSacas = areaIncrementoHa * producaoPorHa;
-        const receitaTotal = totalSacas * valorSaca;
-        const retorno = receitaTotal - custoSinal;
+      const valorSaca = valoresCultura[cultura];
+      const totalSacas = areaIncrementoHa * producaoPorHa;
+      const receitaTotal = totalSacas * valorSaca;
+      const retorno = receitaTotal - custoSinal;
 
-        document.getElementById("valorSaca").textContent = `R$ ${valorSaca.toFixed(2).replace('.', ',')}`;
-        document.getElementById("nomeCultura").textContent = nomesCultura[cultura];
-        document.getElementById("projecao").textContent = `R$ ${receitaTotal.toFixed(2).replace('.', ',')}`;
-        document.getElementById("receita").textContent = `R$ ${receitaTotal.toFixed(2).replace('.', ',')}`;
-        document.getElementById("retorno").textContent = `R$ ${retorno.toFixed(2).replace('.', ',')}`;
-      }
-
-      window.onload = () => {
-        document.getElementById("producaoInput").value = producaoPorHa;
-        document.getElementById("passadasSem").textContent = passadasSem.toFixed(0);
-        document.getElementById("passadasCom").textContent = passadasCom.toFixed(0);
-        document.getElementById("ganhoPassadas").textContent = ganhoPassadas.toFixed(0);
-        document.getElementById("areaIncremento").textContent = `${areaIncrementoM2.toFixed(0)} m²`;
-        document.getElementById("aumentoArea").textContent = `${areaIncrementoHa.toFixed(2)} ha`;
-        document.getElementById("prodArea").textContent = `${areaIncrementoHa.toFixed(2)} ha`;
-        document.getElementById("sacas").textContent = `${(areaIncrementoHa * producaoPorHa).toFixed(0)} Sacas`;
-        document.getElementById("cultura").value = "soja";
-        atualizarValor();
-      };
-    } else {
-      alert("❗ Dados incompletos. Volte e preencha novamente.");
+      document.getElementById("valorSaca").textContent = `R$ ${valorSaca.toFixed(2).replace('.', ',')}`;
+      document.getElementById("nomeCultura").textContent = nomesCultura[cultura].toUpperCase();
+      document.getElementById("projecao").textContent = `R$ ${receitaTotal.toFixed(2).replace('.', ',')}`;
+      document.getElementById("receita").textContent = `R$ ${receitaTotal.toFixed(2).replace('.', ',')}`;
+      document.getElementById("sinal").textContent = `R$ ${custoSinal.toFixed(2).replace('.', ',')}`;
+      document.getElementById("retorno").textContent = `R$ ${retorno.toFixed(2).replace('.', ',')}`;
+      document.getElementById("sacas").textContent = `${Math.round(totalSacas)} Sacas`;
+      document.getElementById("prodArea").textContent = `${areaIncrementoHa.toFixed(2)} ha`;
+      document.getElementById("aumentoArea").textContent = `${areaIncrementoHa.toFixed(2)} ha`;
+      document.getElementById("areaIncremento").textContent = `${areaIncrementoM2.toFixed(0)} m²`;
+      document.getElementById("ganhoPassadas").textContent = ganhoPassadas.toFixed(0);
+      document.getElementById("passadasCom").textContent = passadasCom.toFixed(0);
+      document.getElementById("passadasSem").textContent = passadasSem.toFixed(0);
     }
 
-    function enviarWhatsApp() {
-  const passadasCom = document.getElementById("passadasCom").textContent;
-  const passadasSem = document.getElementById("passadasSem").textContent;
-  const ganhoPassadas = document.getElementById("ganhoPassadas").textContent;
-  const areaIncremento = document.getElementById("areaIncremento").textContent;
-  const aumentoArea = document.getElementById("aumentoArea").textContent;
-  const prodPorHa = document.getElementById("producaoInput").value;
-  const sacas = document.getElementById("sacas").textContent;
-  const receita = document.getElementById("receita").textContent;
-  const valorSaca = document.getElementById("valorSaca").textContent;
-  const retorno = document.getElementById("retorno").textContent;
-  const cultura = document.getElementById("nomeCultura").textContent;
+    window.onload = () => {
+      document.getElementById("producaoInput").value = producaoPorHa;
+      document.getElementById("modeloSinal").value = modeloSinal;
+      document.getElementById("cultura").value = "soja";
+      atualizarValor();
+    };
 
-  const mensagem = 
-`📊 Resultado estimado com Piloto Automático:
+    function enviarWhatsApp() {
+      const passadasCom = document.getElementById("passadasCom").textContent;
+      const passadasSem = document.getElementById("passadasSem").textContent;
+      const ganhoPassadas = document.getElementById("ganhoPassadas").textContent;
+      const areaIncremento = document.getElementById("areaIncremento").textContent;
+      const aumentoArea = document.getElementById("aumentoArea").textContent;
+      const prodPorHa = document.getElementById("producaoInput").value;
+      const sacas = document.getElementById("sacas").textContent;
+      const receita = document.getElementById("receita").textContent;
+      const valorSaca = document.getElementById("valorSaca").textContent;
+      const retorno = document.getElementById("retorno").textContent;
+      const cultura = document.getElementById("nomeCultura").textContent;
+      const sinalNome = document.getElementById("modeloSinal").value;
+      const custoSinal = document.getElementById("sinal").textContent;
+
+      const mensagem = 
+`📊 *Resultado estimado com Piloto Automático*:
 
 ✅ Passadas com piloto: ${passadasCom}
 🚜 Passadas sem piloto: ${passadasSem}
-📉 Ganho de passadas: ${ganhoPassadas} passadas
+📉 Ganho de passadas: ${ganhoPassadas}
 
 📐 Área incrementada: ${areaIncremento} (${aumentoArea})
-
 🌾 Produção por hectare: ${prodPorHa} sacas
 📦 Produção adicional: ${sacas}
 💰 Valor da saca: ${valorSaca}
 📈 Receita extra estimada: ${receita}
 
-📡 Custo sinal GPS: R$ 9.000,00
+📡 Sinal utilizado: ${sinalNome}
+💸 Custo do sinal: ${custoSinal}
 
 🔁 Retorno estimado: ${retorno}
-🌱 Cultura analisada: ${cultura}
+🌱 Cultura: ${cultura}
 
-Equipe AgroDivel 🚜🌾`;
+Equipe AgroDivel 🚜`;
 
-  const numero = prompt("Informe o número do cliente (somente números com DDD):", "49999999999");
-  if (numero) {
-    const url = `https://wa.me/55${numero}?text=${encodeURIComponent(mensagem)}`;
-    window.open(url, '_blank');
-  }
-}
-
-
+      const numero = prompt("Informe o número do cliente (somente números com DDD):", "49999999999");
+      if (numero) {
+        const url = `https://wa.me/55${numero}?text=${encodeURIComponent(mensagem)}`;
+        window.open(url, '_blank');
+      }
+    }
   </script>
-
-  <button class="botao-voltar" onclick="enviarWhatsApp()">📤 Enviar por WhatsApp</button>
-
 
 </body>
 </html>

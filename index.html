@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#002e5d">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Rendimento</title>
@@ -62,6 +65,13 @@
       // Aqui vamos redirecionar para a próxima etapa
       window.location.href = "formulario.html"; // Substitua pelo próximo passo real
     }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker registrado'))
+        .catch(error => console.error('❌ Falha no SW:', error));
+    }
+
   </script>
 </body>
 </html>

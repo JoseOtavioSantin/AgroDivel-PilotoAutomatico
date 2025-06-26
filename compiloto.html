@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#002e5d">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Com Piloto</title>
@@ -93,7 +96,8 @@
       text-align: center;
     }
 
-    .popup-content input {
+    .popup-content input,
+    .popup-content select {
       width: 90%;
       padding: 10px;
       margin: 10px 0;
@@ -146,8 +150,16 @@
   <div class="popup" id="popup">
     <div class="popup-content">
       <h3>Informe os dados</h3>
-      <input type="number" id="implemento" placeholder="Tamanho do implemento (m)">
-      <input type="number" id="erro" placeholder="Erro com piloto (m)">
+
+      <input type="number" id="implemento" placeholder="Tamanho do implemento (m)" disabled>
+
+      <label for="sinal">Escolha o sinal:</label>
+      <select id="sinal" onchange="atualizarErro()">
+        <option value="0.20" data-nome="GS500 Lite">GS500 Lite (0,20 cm)</option>
+        <option value="0.10" data-nome="PLM1">PLM1 (0,10 cm)</option>
+        <option value="0.03" data-nome="PLM3">PLM3 (0,03 cm)</option>
+      </select>
+
       <button onclick="calcular()">Salvar</button>
     </div>
   </div>
@@ -157,36 +169,49 @@
     const lado = Math.sqrt(area * 10000).toFixed(0);
     document.getElementById("ladoTalhao").textContent = `${lado} m`;
 
+    const implementoSemPiloto = parseFloat(localStorage.getItem("implemento_sem") || 0);
+    document.getElementById("implemento").value = implementoSemPiloto;
+
+    let erroComPiloto = parseFloat(document.getElementById("sinal").value) || 0.3;
+    let nomeSinal = document.getElementById("sinal").options[document.getElementById("sinal").selectedIndex].dataset.nome;
+
     function abrirPopup() {
       document.getElementById("popup").style.display = "flex";
     }
 
-function calcular() {
-  const imp = parseFloat(document.getElementById("implemento").value);
-  const erro = parseFloat(document.getElementById("erro").value);
-  if (imp > 0 && erro >= 0) {
-    const larguraTotal = imp + erro;
-    const passadas = (lado / larguraTotal).toFixed(1);
+    function atualizarErro() {
+      const select = document.getElementById("sinal");
+      erroComPiloto = parseFloat(select.value);
+      nomeSinal = select.options[select.selectedIndex].dataset.nome;
+    }
 
-    document.getElementById("resultado").textContent = `➤ Passadas com piloto: ${passadas}`;
+    function calcular() {
+      const imp = implementoSemPiloto;
+      const erro = erroComPiloto;
 
-    const btn = document.getElementById("btnMais");
-    btn.textContent = "✓";
-    btn.classList.add("preenchido");
+      if (imp > 0 && erro >= 0) {
+        const larguraTotal = imp + erro;
+        const passadas = (lado / larguraTotal).toFixed(1);
 
-    document.getElementById("popup").style.display = "none";
-    document.getElementById("btnAvancar").style.display = "block";
+        document.getElementById("resultado").textContent = `➤ Passadas com piloto: ${passadas}`;
 
-    // 🔧 Correção aqui:
-    localStorage.setItem("implemento_com", imp);
-    localStorage.setItem("imprecisao_com", erro);
-  } else {
-    alert("Preencha os dois campos corretamente.");
-  }
-}
+        const btn = document.getElementById("btnMais");
+        btn.textContent = "✓";
+        btn.classList.add("preenchido");
+
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("btnAvancar").style.display = "block";
+
+        localStorage.setItem("implemento_com", imp);
+        localStorage.setItem("imprecisao_com", erro);
+        localStorage.setItem("modelo_sinal", nomeSinal);
+      } else {
+        alert("Erro ao obter os dados.");
+      }
+    }
 
     function finalizar() {
-      window.location.href = "resultadofinal.html"; // ou próximo passo
+      window.location.href = "resultadofinal.html";
     }
   </script>
 
