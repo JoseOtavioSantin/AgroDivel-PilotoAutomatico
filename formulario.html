@@ -68,8 +68,8 @@
     .right { right: -40px; }
 
     .btn-plus {
-      background-color: #2dc4ff;
-      color: white;
+      background-color: #ffffff;
+      color: #002a68;
       border: none;
       width: 60px;
       height: 60px;
@@ -84,6 +84,7 @@
 
     .btn-plus.preenchido {
       background-color: #28a745;
+      color: #ffffff;
       font-size: 30px;
     }
 
@@ -112,6 +113,7 @@
     }
 
     .popup-content input {
+      border-radius: 5px;
       width: 90%;
       padding: 10px;
       margin: 10px 0;
@@ -119,7 +121,8 @@
     }
 
     .popup-content button {
-      background: #2dc4ff;
+      margin-top: 10px;
+      background: #002e5d;
       border: none;
       padding: 10px 20px;
       color: white;
@@ -145,7 +148,7 @@
 
   <img src="logo-agrodivel.png" class="logo" alt="Logo">
 
-  <h2>INFORMAÇÕES DO ÁREA</h2>
+  <h2>Informações da Área</h2>
 
   <div class="talhao-container">
     <div class="dimensao top" id="topo">---</div>
@@ -164,7 +167,7 @@
     <div class="popup-content">
       <h3>Área total (em hectares)</h3>
       <input type="number" id="areaTotal" placeholder="Ex: 4.5">
-      <button onclick="salvarArea()">Salvar</button>
+      <button onclick="salvarArea()">SALVAR</button>
     </div>
   </div>
 

@@ -11,8 +11,9 @@ self.addEventListener('install', e => {
         'resultadofinal.html',
         'manifest.json',
         'logo-agrodivel.png',
-        'icon-192.png',
-        'icon-512.png'
+        'icon.png',
+        'bg-com-piloto.png',
+        'bg-sem-piloto.png'
       ]);
     })
   );

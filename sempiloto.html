@@ -36,7 +36,7 @@
       margin-top: 50px;
       width: 300px;
       height: 300px;
-      background: #002e5d;
+      background: url('bg-sem-piloto.png') no-repeat center center; background-size: cover;
       border-radius: 20px;
       position: relative;
       display: flex;
@@ -58,8 +58,8 @@
     }
 
     .btn-plus {
-      background-color: #2dc4ff;
-      color: white;
+      background-color: #ffffff;
+      color: #002e5d;
       border: none;
       width: 60px;
       height: 60px;
@@ -73,6 +73,7 @@
 
     .btn-plus.preenchido {
       background-color: #28a745;
+      color: white;
       font-size: 30px;
     }
 
@@ -97,6 +98,7 @@
     }
 
     .popup-content input {
+      border-radius: 5px;
       width: 90%;
       padding: 10px;
       margin: 10px 0;
@@ -104,7 +106,8 @@
     }
 
     .popup-content button {
-      background: #2dc4ff;
+      margin-top: 10px;
+      background: #002e5d;
       border: none;
       padding: 10px 20px;
       color: white;
@@ -135,7 +138,7 @@
 
   <img src="logo-agrodivel.png" class="logo" alt="Logo">
 
-  <h2>SEM PILOTO</h2>
+  <h2>Sem Piloto</h2>
 
   <div class="talhao-container">
     <div class="dimensao top" id="ladoTalhao">---</div>
@@ -151,7 +154,7 @@
       <h3>Informe os dados</h3>
       <input type="number" id="implemento" placeholder="Tamanho do implemento (m)">
       <input type="number" id="erro" placeholder="Imprecisão do sinal (m)">
-      <button onclick="calcular()">Salvar</button>
+      <button onclick="calcular()">SALVAR</button>
     </div>
   </div>
 
